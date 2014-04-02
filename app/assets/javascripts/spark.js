@@ -72,7 +72,7 @@ function keyDownHandler(event) {
             // right key
 
             // move the ball 1 right by adding 1 to ballX
-            ballX += 3;
+            ballX += 13;
 
             // calc the ball's right edge
             var ballRight = ballX + ballRadius;

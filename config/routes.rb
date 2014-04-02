@@ -2,6 +2,9 @@ VibesSpark::Application.routes.draw do
 
   root :to => "welcome#index"
 
+  get "journey/index"
+  get "about/index"
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
