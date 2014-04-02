@@ -10,6 +10,7 @@ var ballRadius = 15;
 
 var leftWall = 100;
 var rightWall = 1100;
+var middleWall = 600;
 
 draw();
 
@@ -26,6 +27,8 @@ function draw() {
     ctx.lineTo(leftWall, canvas.height);
     ctx.moveTo(rightWall, 0);
     ctx.lineTo(rightWall, canvas.height);
+    ctx.moveTo(middleWall, 0);
+    ctx.lineTo(middleWall, canvas.height);
     ctx.lineWidth = 2;
     ctx.stroke();
 
@@ -35,7 +38,6 @@ function draw() {
     ctx.closePath();
     ctx.fill();
 }
-
 
 
 // Here we just handle command keys
