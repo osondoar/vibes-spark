@@ -39,11 +39,10 @@ label.error {
     margin-right: auto;
     display: block;
     height: auto;
-    border:1px solid red;
-    background-color: #fff;
+    background-color: #666;
     background-image: url('/assets/baseketball_court.png');
     background-repeat: repeat;
-    background-size: 115% auto;
+    background-size: 100% 100%;
 }
 
 #sidebar{
