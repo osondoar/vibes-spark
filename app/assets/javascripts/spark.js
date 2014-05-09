@@ -30,7 +30,7 @@ var rightWall = 1100;
 var middleWall = 600;
 var player_floor = 650;
 var ball_floor = 650;
-var refreshRate = 29;
+var refreshRate = 45;
 var player_ceiling = 530;
 var ball_ceiling = 100;
 
@@ -63,20 +63,9 @@ function collisionCheck() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // draw walls on left and right
-  ctx.beginPath();
-  ctx.moveTo(leftWall, 0);
-  ctx.lineTo(leftWall, canvas.height);
-  ctx.moveTo(rightWall, 0);
-  ctx.lineTo(rightWall, canvas.height);
-  ctx.moveTo(middleWall, 0);
-  ctx.lineTo(middleWall, canvas.height);
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
   ctx.drawImage(ball.image, ball.x, ball.y, ball.width, ball.width);
-  ctx.drawImage(p1.image, p1.x, p1.y);
-  ctx.drawImage(p2.image, p2.x, p2.y);
+  ctx.drawImage(p1.image, p1.x, p1.y, p1.width, p1.height);
+  ctx.drawImage(p2.image, p2.x, p2.y, p2.width, p2.height);
 }
 
 var speed = 2;
@@ -278,11 +267,11 @@ function initialize_physics() {
   p2.y = starting_y;
   ball.y = starting_y;
 
-  p1.height = 64;
-  p2.height = 64;
+  p1.height = 100;
+  p2.height = 100;
   ball.height = 40;
 
-  p1.width = 50;
+  p1.width = 80;
   p2.width = 80;
   ball.width = 50;
 
@@ -328,13 +317,13 @@ function initialize_images() {
   ball.image.onload = function() {
     ctx.drawImage(ball.image, ball.x, ball.y, ball.width, ball.width);
   };
-  p1.image.src = 'assets/rails.png';
+  p1.image.src = 'assets/p1.png';
   p1.image.onload = function() {
-    ctx.drawImage(p1.image, p1.x, p1.y);
+    ctx.drawImage(p1.image, p1.x, p1.y, p1.width, p1.height);
   };
-  p2.image.src = 'assets/php.jpg';
+  p2.image.src = 'assets/p2.png';
   p2.image.onload = function() {
-    ctx.drawImage(p2.image, p2.x, p2.y);
+    ctx.drawImage(p2.image, p2.x, p2.y, p2.width, p2.height);
   };
 }
 

@@ -41,9 +41,9 @@ label.error {
     height: auto;
     border:1px solid red;
     background-color: #fff;
-    background-image: url('/assets/court.jpg');
+    background-image: url('/assets/baseketball_court.png');
     background-repeat: repeat;
-    background-size: 100% auto;
+    background-size: 115% auto;
 }
 
 #sidebar{
