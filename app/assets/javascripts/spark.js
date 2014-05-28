@@ -260,7 +260,6 @@ function keyMove() {
           // up key
 
           moveUp(p1);
-          moveUp(ball);
           break;
 
         case 37:
@@ -268,7 +267,6 @@ function keyMove() {
           // left key
 
           moveLeft(p1);
-          moveLeft(ball);
           break;
 
         case 39:
@@ -276,7 +274,6 @@ function keyMove() {
           // right key
 
           moveRight(p1);
-          moveRight(ball);
           break;
 
         case 65:
