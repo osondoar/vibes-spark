@@ -20,6 +20,8 @@ ctx.fillStyle = "red";
 var ball = {};
 var p1 = {};
 var p2 = {};
+var left_hoop = {};
+var right_hoop = {};
 var nouns = [p1, p2, ball];
 var keys = [];
 
@@ -48,15 +50,40 @@ function gameLoop(){
   },1000/refreshRate);
 }
 
+function resetDelta(noun) {
+  noun.right_delta = 0;
+  noun.left_delta = 0;
+}
+
 function collisionCheck() {
-  if((ball.state == 'ground') &&  Math.abs(ball.x - p2.x) < 20) {
-    ball.state = 'p2'
+  if((ball.state == 'ground') &&  Math.abs(ball.x - p2.x) < 40) {
+    resetDelta(ball)
+    ball.state = 'p2';
     ball.y -= 50;
   }
   if(ball.state == 'p2'){
-    ball.x = p2.x
+    ball.x = p2.x;
   }
+  if((ball.state == 'ground') &&  Math.abs(ball.x - p1.x) < 40) {
+    resetDelta(ball)
+    ball.state = 'p1';
+    ball.y -= 50;
+  }
+  if(ball.state == 'p1'){
+    ball.x = p1.x + 40;
+  }
+  if(ball.state == 'air' && Math.abs(ball.x - left_hoop.x) < 40 && Math.abs(ball.y - left_hoop.y) < 40) {
+    playerScores('1');
+  }
+  if(ball.state == 'air' && Math.abs(ball.x - right_hoop.x) < 40 && Math.abs(ball.y - right_hoop.y) < 40) {
+    playerScores('2');
+  }
+}
 
+function playerScores(player) {
+  element = '#p' + player + '-score';
+  old_score = $(element).html();
+  $(element).html(parseInt(old_score) + 1);
 }
 
 function draw() {
@@ -233,6 +260,7 @@ function keyMove() {
           // up key
 
           moveUp(p1);
+          moveUp(ball);
           break;
 
         case 37:
@@ -240,6 +268,7 @@ function keyMove() {
           // left key
 
           moveLeft(p1);
+          moveLeft(ball);
           break;
 
         case 39:
@@ -247,6 +276,7 @@ function keyMove() {
           // right key
 
           moveRight(p1);
+          moveRight(ball);
           break;
 
         case 65:
@@ -275,9 +305,9 @@ function keyMove() {
 }
 
 function initialize_physics() {
-  p1.x = 200;
-  p2.x = 600;
-  ball.x = 460;
+  p1.x = 480;
+  p2.x = 660;
+  ball.x = 585;
 
   p1.y = starting_y;
   p2.y = starting_y;
@@ -314,6 +344,11 @@ function initialize_physics() {
   p1.ceiling = player_ceiling;
   p2.ceiling = player_ceiling;
   ball.ceiling = ball_ceiling;
+
+  left_hoop.x = 193;
+  left_hoop.y = 268;
+  right_hoop.x = 977;
+  right_hoop.y = 268;
 
   ball.power_x = 0;
   ball.power_y = 0;

@@ -75,3 +75,16 @@ p{
 .well{
     margin-top: 60px;
 }
+
+#scoreboard {
+  margin-right: 7%;
+  margin-left: 20%;
+}
+
+#score-col1 {
+  float: left;
+}
+
+#score-col2 {
+  float: right;
+}
