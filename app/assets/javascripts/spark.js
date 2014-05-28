@@ -24,14 +24,13 @@ var nouns = [p1, p2, ball];
 var keys = [];
 
 
-var starting_y = 500;
+var starting_y = 400;
 var leftWall = 100;
 var rightWall = 1100;
-var middleWall = 600;
-var player_floor = 650;
-var ball_floor = 650;
+var player_floor = 500;
+var ball_floor = 500;
 var refreshRate = 45;
-var player_ceiling = 530;
+var player_ceiling = 380;
 var ball_ceiling = 100;
 
 initialize_images();
@@ -188,7 +187,7 @@ function increasePower(noun){
   },1000/refreshRate);
 }
 
-function shootBall(noun){
+function shootBallLeft(noun){
   ball.state = 'air'
   if(noun.power_y > 0) {
     moveBallUp(noun);
@@ -199,6 +198,17 @@ function shootBall(noun){
   moveLeft(noun);
 }
 
+function shootBallRight(noun){
+  ball.state = 'air'
+  if(noun.power_y > 0) {
+    moveBallUp(noun);
+  }
+  if(noun.power_x > 0) {
+    noun.right_delta = noun.power_x;
+  }
+  moveRight(noun);
+}
+
 // Here we just handle command keys
 function keyMove() {
 
@@ -207,8 +217,14 @@ function keyMove() {
 
     if(value == true) {
       switch (key) {
-        case 32:
-          // space key
+        case 49:
+          // 1 key
+
+          increasePower(ball);
+          break;
+
+        case 48:
+          // 0 key
 
           increasePower(ball);
           break;
@@ -329,9 +345,12 @@ function initialize_images() {
 
 function keyChangeHandler(e){
   keys[e.keyCode] = e.type == 'keydown';
-  if(e.type == 'keyup' && e.keyCode == 32) {
+  if(e.type == 'keyup' && e.keyCode == 49) {
     // shoot the ball
-    shootBall(ball);
+    shootBallLeft(ball);
+  }
+  if(e.type == 'keyup' && e.keyCode == 48) {
+    shootBallRight(ball);
   }
 }
 

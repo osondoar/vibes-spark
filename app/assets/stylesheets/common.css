@@ -47,9 +47,9 @@ label.error {
 
 #sidebar{
     background-color: #f26621;
-    height: 1000px;
+    height: 700px;
     float: left;
-    width: 200px;
+    width: 180px;
     color: #666;
     margin: 30px auto 0 -20px;
 }
@@ -61,7 +61,7 @@ label.error {
 
 .navbar {
     background-color: #f26621;
-   
+
 }
 
 h1{
