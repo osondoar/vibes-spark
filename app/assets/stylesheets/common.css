@@ -76,15 +76,29 @@ p{
     margin-top: 60px;
 }
 
+@font-face {
+  font-family: scoreboard;
+  src:url('/assets/scoreboard.ttf');
+}
 #scoreboard {
   margin-right: 7%;
   margin-left: 20%;
+  font-family: scoreboard;
+}
+
+#p1-score,
+#p2-score{
+  font-size: 80px;
+  top: -400px;
+  position: relative;
 }
 
 #score-col1 {
   float: left;
+  margin-left: 50px;
 }
 
 #score-col2 {
   float: right;
+  margin-right: 50px;
 }

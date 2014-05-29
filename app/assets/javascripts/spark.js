@@ -31,8 +31,9 @@ var leftWall = 100;
 var rightWall = 1100;
 var player_floor = 500;
 var ball_floor = 500;
-var refreshRate = 45;
-var player_ceiling = 380;
+var refreshRate = 40;
+// var refreshRate = 10;
+var player_ceiling = 200;
 var ball_ceiling = 100;
 
 initialize_images();
@@ -56,34 +57,54 @@ function resetDelta(noun) {
 }
 
 function collisionCheck() {
-  if((ball.state == 'ground') &&  Math.abs(ball.x - p2.x) < 40) {
+
+  console.log(p2.state);
+  
+  if(ball.state == 'released'){
+    if(ball.shot_by == 'p1' && Math.abs(ball.x - p1.x) > 100){
+      ball.state = 'air'
+    }
+
+    if(ball.shot_by == 'p2' && Math.abs(ball.x - p2.x) > 100){
+      ball.state = 'air'
+    }
+  }
+  // console.log("col2: " + ball.state + ' ' + ball.shot_by );
+  if((ball.state == 'ground' || ball.state == 'air') &&  euclidean_distance(ball, p2) < 40) {
     resetDelta(ball)
     ball.state = 'p2';
     ball.y -= 50;
+    ball.shot_by = null;
   }
   if(ball.state == 'p2'){
     ball.x = p2.x;
+    ball.y = p2.y+10 ;
   }
-  if((ball.state == 'ground') &&  Math.abs(ball.x - p1.x) < 40) {
+  if((ball.state == 'ground' || ball.state == 'air') &&  euclidean_distance(ball, p1) < 40) {
     resetDelta(ball)
     ball.state = 'p1';
     ball.y -= 50;
+    ball.shot_by = null;
   }
   if(ball.state == 'p1'){
     ball.x = p1.x + 40;
+    ball.y = p1.y+10;
   }
-  if(ball.state == 'air' && Math.abs(ball.x - left_hoop.x) < 40 && Math.abs(ball.y - left_hoop.y) < 40) {
-    playerScores('1');
-  }
-  if(ball.state == 'air' && Math.abs(ball.x - right_hoop.x) < 40 && Math.abs(ball.y - right_hoop.y) < 40) {
-    playerScores('2');
+  if((ball.state == 'air' || ball.state == 'released') && ball.scored == false){
+    if(Math.abs(ball.x - left_hoop.x) < 40 && Math.abs(ball.y - left_hoop.y) < 40) {
+      playerScores('1');
+    }
+    if(Math.abs(ball.x - right_hoop.x) < 40 && Math.abs(ball.y - right_hoop.y) < 40) {
+      playerScores('2');
+    }
   }
 }
 
 function playerScores(player) {
+  ball.scored = true
   element = '#p' + player + '-score';
   old_score = $(element).html();
-  $(element).html(parseInt(old_score) + 1);
+  $(element).html(parseInt(old_score) + 2);
 }
 
 function draw() {
@@ -94,12 +115,14 @@ function draw() {
   ctx.drawImage(p2.image, p2.x, p2.y, p2.width, p2.height);
 }
 
-var speed = 2;
+var speed = 1;
 var right_delta = 50;
 var left_delta = 50;
 var gravity_delta = 5;
 var up_delta = 10;
-var up_speed = 2;
+var up_speed = 10;
+var ball_up_speed = 0;
+var ball_x_speed = 6;
 var gravity_acceleration = 0.5;
 
 function animateNouns() {
@@ -109,20 +132,26 @@ function animateNouns() {
   });
 }
 
+function jump(player){
+  if(player.state == 'ground'){
+    player.state = 'air'; 
+    moveUp(player, up_speed);
+  }
+}
 
-function moveUp(noun){
+function moveUp(noun, speed){
   noun.up_delta-=1;
 
   setTimeout(function(){
     if(noun.up_delta > 0){
-      futureY = noun.y - up_speed;
+      futureY = noun.y - speed;
       if(futureY > noun.ceiling) {
-        noun.y -= up_speed;
-        moveUp(noun);
+        noun.y -= speed;
+        moveUp(noun, speed);
       }
     }
     else{
-      noun.up_delta=20;
+      noun.up_delta=4000;
     }
   },1000/refreshRate);
 }
@@ -132,10 +161,10 @@ function moveBallUp(noun) {
 
   setTimeout(function(){
     if(noun.up_delta > 0){
-      futureY = noun.y - 20;
+      futureY = noun.y - ball_up_speed;
       if(futureY > noun.ceiling) {
         noun.y = futureY;
-        moveUp(noun);
+        moveUp(noun, ball_up_speed);
       }
     }
     else{
@@ -145,26 +174,41 @@ function moveBallUp(noun) {
 }
 
 function gravityMove(noun){
+  var move_y_total = 0;
   noun.gravity_delta-=1;
 
   setTimeout(function(){
     if(noun.gravity_delta > 0){
-      if (noun.y <= (noun.floor - noun.height)) {
-        if (noun.name != 'ball' || noun.state == 'air'){
-          noun.y += gravity_acceleration;
+      
+      if ((noun.floor - noun.height) - noun.y > gravity_acceleration  ) {
+        if (noun.name != 'ball' || noun.state == 'air' || noun.state == 'released'){
+          move_y_total += gravity_acceleration;
         }
       }
       else{
-        noun.state = 'ground';
+        if(noun.state != 'p1' && noun.state != 'p2'){
+          noun.state = 'ground';
+        }
+        if(noun.name == 'ball'){
+          ball.scored = false;
+        }
       }
-      if(noun.name == 'ball' && noun.state == 'air' && (noun.power_y > 0)) {
-        noun.y -= 1;
+      if(noun.name == 'ball' && (noun.state == 'air' || noun.state == 'released') && (noun.power_y > 0)) {
+        move_y_total -= 1.3;
         noun.power_y -= 3;
       }
+      // noun.y+= move_y_total;
+      noun.y+= move_y_total;
+      // if(noun.name == 'p2'){
+      //   console.log(noun.y)
+      // }
       gravityMove(noun);
     }
     else{
       noun.gravity_delta=10;
+      if(noun.name == 'p1' || noun.name == 'p2'){
+        noun.y = (noun.floor - noun.height);
+      }
     }
   },1000/refreshRate);
 }
@@ -176,7 +220,12 @@ function moveRight(noun){
     if(noun.right_delta > 0){
       futureX = noun.x + noun.width + speed;
       if (futureX <= rightWall) {
-        noun.x += speed;
+        if(noun.name == 'ball'){
+          noun.x += ball_x_speed;
+        }
+        else{
+          noun.x += speed;
+        }
       }
       moveRight(noun);
     }
@@ -193,7 +242,13 @@ function moveLeft(noun){
     if(noun.left_delta > 0){
       futureX = noun.x - speed;
       if (futureX > leftWall) {
-        noun.x -= speed;
+        if(noun.name == 'ball'){
+          noun.x -= ball_x_speed;
+        }
+        else{
+          noun.x -= speed;
+        }
+        
       }
       moveLeft(noun);
     }
@@ -208,32 +263,38 @@ function increasePower(noun){
 
   setTimeout(function(){
     if(noun.state == 'p1' || noun.state == 'p2'){
-      ball.power_x += 10;
-      ball.power_y += 30;
+      ball.power_x += 20;
+      ball.power_y += 20;
     }
   },1000/refreshRate);
 }
 
 function shootBallLeft(noun){
-  ball.state = 'air'
-  if(noun.power_y > 0) {
-    moveBallUp(noun);
+  if(noun.state == 'p2'){
+    ball.state = 'released'
+    ball.shot_by = 'p2'
+    if(noun.power_y > 0) {
+      moveBallUp(noun);
+    }
+    if(noun.power_x > 0) {
+      noun.left_delta = noun.power_x;
+    }
+    moveLeft(noun);
   }
-  if(noun.power_x > 0) {
-    noun.left_delta = noun.power_x;
-  }
-  moveLeft(noun);
 }
 
 function shootBallRight(noun){
-  ball.state = 'air'
-  if(noun.power_y > 0) {
-    moveBallUp(noun);
+  if(noun.state == 'p1'){
+    ball.state = 'released'
+    ball.shot_by = 'p1'
+    if(noun.power_y > 0) {
+      moveBallUp(noun);
+    }
+    if(noun.power_x > 0) {
+      noun.right_delta = noun.power_x;
+    }
+    moveRight(noun);
   }
-  if(noun.power_x > 0) {
-    noun.right_delta = noun.power_x;
-  }
-  moveRight(noun);
 }
 
 // Here we just handle command keys
@@ -259,7 +320,7 @@ function keyMove() {
         case 38:
           // up key
 
-          moveUp(p1);
+          jump(p1);
           break;
 
         case 37:
@@ -291,7 +352,7 @@ function keyMove() {
         case 87:
           // w key (up)
 
-          moveUp(p2);
+          jump(p2);
           break;
 
         default:
@@ -299,6 +360,17 @@ function keyMove() {
       }
     }
   });
+}
+
+function euclidean_distance(ball, player){
+ 
+  if(ball.state == 'ground'){
+     player_corrected_y = ball.y;
+  }
+  else{
+     player_corrected_y = player.y;
+  }
+  return Math.sqrt(Math.pow(ball.x - player.x, 2) + Math.pow(ball.y - player_corrected_y, 2));
 }
 
 function initialize_physics() {
@@ -353,7 +425,7 @@ function initialize_physics() {
   ball.name = 'ball';
   p1.name = 'p1';
   p2.name = 'p2';
-  ball.up_speed = up_speed;
+  ball.up_speed = 2;
 }
 
 // initialize the players and the ball
@@ -377,6 +449,7 @@ function initialize_images() {
 
 function keyChangeHandler(e){
   keys[e.keyCode] = e.type == 'keydown';
+  e.preventDefault();
   if(e.type == 'keyup' && e.keyCode == 49) {
     // shoot the ball
     shootBallLeft(ball);
