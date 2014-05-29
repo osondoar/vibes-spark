@@ -46,10 +46,9 @@ label.error {
 }
 
 #sidebar{
-    background-color: #f26621;
     height: 700px;
     float: left;
-    width: 180px;
+    width: 100px;
     color: #666;
     margin: 30px auto 0 -20px;
 }
