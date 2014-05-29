@@ -81,23 +81,22 @@ p{
 }
 #scoreboard {
   margin-right: 7%;
-  margin-left: 20%;
+  margin-left: 15%;
   font-family: scoreboard;
 }
 
 #p1-score,
 #p2-score{
-  font-size: 80px;
+  font-size: 90px;
   top: -400px;
   position: relative;
 }
 
 #score-col1 {
   float: left;
-  margin-left: 50px;
 }
 
 #score-col2 {
   float: right;
-  margin-right: 50px;
+  /*margin-right: 60px;*/
 }
